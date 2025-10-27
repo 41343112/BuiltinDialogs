@@ -140,10 +140,10 @@ void CBuiltinDlg::doPushBtn()
             if(progress.wasCanceled())
                 break;
             qDebug()<<i;
-             _sleep(10);
+
 
         }
-
+        _sleep(10000);
         progress.setValue(1000);
     }
     if(btn==printPushBtn){
