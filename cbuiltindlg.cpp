@@ -84,7 +84,9 @@ void CBuiltinDlg::doPushBtn()
         QErrorMessage box(this);
         box.setWindowTitle(QStringLiteral("錯誤訊息盒"));
         box.showMessage(QStringLiteral("錯誤訊息盒實例xx : "));
+         box.exec();
         box.showMessage(QStringLiteral("錯誤訊息盒實例yy : "));
+         box.exec();
         box.showMessage(QStringLiteral("錯誤訊息盒實例zz : "));
         box.exec();
 
@@ -143,7 +145,7 @@ void CBuiltinDlg::doPushBtn()
 
 
         }
-        _sleep(10000);
+
         progress.setValue(1000);
     }
     if(btn==printPushBtn){
