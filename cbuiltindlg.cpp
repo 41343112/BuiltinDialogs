@@ -7,6 +7,11 @@
 #include<QFileDialog>
 #include<QFontDialog>
 #include<QInputDialog>
+#include<QtPrintSupport/qprinter.h>
+#include<QtPrintSupport/QPrintDialog>
+#include<QtPrintSupport/QPrintPreviewDialog>
+#include<QtPrintSupport/qpagesetupdialog.h>
+#include<QProgressDialog>
 
 CBuiltinDlg::CBuiltinDlg(QWidget *parent)
     : QDialog(parent)
@@ -22,6 +27,7 @@ CBuiltinDlg::CBuiltinDlg(QWidget *parent)
     pagePushBtn     =new QPushButton(QStringLiteral("頁面設定對話盒"));
     progressPushBtn =new QPushButton(QStringLiteral("進度對話盒"));
     printPushBtn    =new QPushButton(QStringLiteral("列印對話盒"));
+    textColorPushBtn=new QPushButton(QStringLiteral("文字顏色對話盒"));
 
     gridLayout->addWidget(colorPushBtn ,0,0,1,1);
     gridLayout->addWidget(errorPushBtn,0,1,1,1);
@@ -31,6 +37,7 @@ CBuiltinDlg::CBuiltinDlg(QWidget *parent)
     gridLayout->addWidget(pagePushBtn,1,2,1,1);
     gridLayout->addWidget(progressPushBtn,2,0,1,1);
     gridLayout->addWidget(printPushBtn,2,1,1,1);
+    gridLayout->addWidget(textColorPushBtn,2,2,1,1);
     gridLayout->addWidget(displayTextEdit,3,0,3,3);
     ui->setupUi(this);
 
@@ -46,6 +53,7 @@ CBuiltinDlg::CBuiltinDlg(QWidget *parent)
     connect(progressPushBtn,SIGNAL(clicked()),this,SLOT(doPushBtn()));
     connect(pagePushBtn,SIGNAL(clicked()),this,SLOT(doPushBtn()));
     connect(printPushBtn,SIGNAL(clicked()),this,SLOT(doPushBtn()));
+    connect(textColorPushBtn,SIGNAL(clicked()),this,SLOT(doPushBtn()));
 
 }
 
@@ -109,5 +117,54 @@ void CBuiltinDlg::doPushBtn()
                                              &ok
                                              );
         if(ok  &&!text.isEmpty())displayTextEdit->setText(text);
+    }
+    if(btn==pagePushBtn){
+        QPrinter printer (QPrinter::HighResolution);
+        QPageSetupDialog* dlg = new QPageSetupDialog(&printer,this);
+        dlg->setWindowTitle(QStringLiteral("頁面設定話方塊"));
+        if(dlg->exec()==QDialog::Accepted)
+        {
+
+        }
+
+    }
+
+    if(btn==progressPushBtn){
+        QProgressDialog progress(QStringLiteral("正在複製檔案..."),
+                                 QStringLiteral("取消"),0,1000,this);
+        progress.setWindowTitle(QStringLiteral("進度對話方塊"));
+        progress.show();
+        for(int i=0;i<1000;i++){
+            progress.setValue(i);
+            qApp->processEvents();
+            if(progress.wasCanceled())
+                break;
+            qDebug()<<i;
+             _sleep(10);
+
+        }
+
+        progress.setValue(1000);
+    }
+    if(btn==printPushBtn){
+        QPrinter printer(QPrinter::HighResolution);
+        QPrintDialog dialog(&printer,this);
+        if(dialog.exec() != QDialog::Accepted)
+            return;
+
+    }
+
+    if(btn==textColorPushBtn){
+        QPalette palette=displayTextEdit->palette();
+        const QColor& color=
+            QColorDialog::getColor(palette.color(QPalette::Text));
+        this,QStringLiteral("設定背景顏色");
+
+        if(color.isValid()){
+            palette.setColor(QPalette::Text,color);
+            displayTextEdit->setPalette(palette);
+
+        }
+
     }
 }
